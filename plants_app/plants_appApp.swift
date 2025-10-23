@@ -11,6 +11,7 @@ import SwiftUI
 struct plants_appApp: App {
     var body: some Scene {
         WindowGroup {
+            // يبدأ التطبيق بشاشة MyPlantsExactView
             MyPlantsExactView()
         }
     }

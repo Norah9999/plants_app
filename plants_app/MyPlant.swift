@@ -100,7 +100,7 @@ struct MyPlantsExactView: View {
                                 .fill(buttonBackgroundColor)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 30)
-                                        .stroke(buttonBorderColor, lineWidth: 2)
+                                        .stroke(buttonBorderColor, lineWidth: 0)
                                 )
                                 .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 5)
                         )
@@ -110,13 +110,8 @@ struct MyPlantsExactView: View {
                 Spacer()
             }
         }
-        // إعدادات الـ Sheet لمنع تصغير الخلفية
-        .sheet(isPresented: $showingReminderSheet) {
-            SetReminderView()
-                .presentationDetents([.large]) // لتغطية الشاشة تقريباً بالكامل
-                .presentationCornerRadius(0)  // لإلغاء زوايا الـ sheet الافتراضية
-                .presentationBackground(.clear) // لمنع التعتيم أو التحجيم الخلفي
-        }
+        
+
     }
 }
 struct MyPlantsExactView_Previews: PreviewProvider {
