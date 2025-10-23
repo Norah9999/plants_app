@@ -7,23 +7,22 @@
 
 import SwiftUI
 
-// يجب أن تضع كود الـ Extensions.swift في ملف منفصل أو هنا
-// لضمان عمل هذا الكود، تأكد من وجود الـ Extensions في المشروع.
-
 struct MyPlantsExactView: View {
     
-    // الألوان الدقيقة من التصميم
-    let backgroundColor = Color.black
+    // يحدد حالة الشيت (مخفي افتراضياً)
+    @State private var showingReminderSheet = false
+    
+    // الألوان المحددة عبر Assets
+    let backgroundColor = Color("DarkBackground") // الرمادي الداكن
     let headerTextColor = Color.white
-    let buttonBackgroundColor = Color(hex: "5CB895")
-    let buttonBorderColor = Color(hex: "A8D8C5")
-    let descriptiveTextColor = Color(hex: "A0A0A0")
+    let buttonBackgroundColor = Color("PrimaryGreen")
+    let buttonBorderColor = Color("ButtonBorder")
+    let descriptiveTextColor = Color("DescriptiveText")
 
     var body: some View {
         ZStack {
-            // 1. الخلفية السوداء بالكامل
+            // 1. الخلفية الرمادية الداكنة بالكامل
             backgroundColor.edgesIgnoringSafeArea(.all)
-            
             
             VStack(spacing: 0) {
                 
@@ -41,36 +40,37 @@ struct MyPlantsExactView: View {
                         .font(.system(size: 12))
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, 5)
+                .padding(.top, 1)
                 
+              
                 
                 // العنوان "My Plants 🌱"
                 HStack {
                     Text("My Plants ")
-                        .font(.system(size: 32, weight: .bold))
+                        .font(.system(size: 35, weight: .bold))
                         .foregroundColor(headerTextColor)
                     Text("🌱")
-                        .font(.system(size: 32))
+                        .font(.system(size: 35))
                     Spacer()
                 }
                 .padding(.leading, 20)
                 .padding(.top, 30)
                 
-                //الخط النحيف//
+                // الخط النحيف
                 Divider()
                     .background(headerTextColor.opacity(0.5))
                     .frame(height: 1)
                     .padding(.vertical, 8)
+
                 
                 Spacer()
                 
                 // صورة النبتة
-                // NOTE: يجب إضافة صورة باسم "plant_illustration" إلى Assets
                 Image("plant")
-                     .resizable()
-                     .scaledToFit()
-                     .frame(width: 200, height: 200)
-                     .padding(.bottom, 40)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
+                    .padding(.bottom, 40)
                 
                 // عنوان "Start your plant journey!"
                 Text("Start your plant journey!")
@@ -89,7 +89,7 @@ struct MyPlantsExactView: View {
                 
                 // الزر "Set Plant Reminder"
                 Button(action: {
-                    // هنا تضع كود عمل الزر
+                    self.showingReminderSheet = true
                 }) {
                     Text("Set Plant Reminder")
                         .font(.system(size: 18, weight: .bold))
@@ -110,11 +110,16 @@ struct MyPlantsExactView: View {
                 Spacer()
             }
         }
+        // إعدادات الـ Sheet لمنع تصغير الخلفية
+        .sheet(isPresented: $showingReminderSheet) {
+            SetReminderView()
+                .presentationDetents([.large]) // لتغطية الشاشة تقريباً بالكامل
+                .presentationCornerRadius(0)  // لإلغاء زوايا الـ sheet الافتراضية
+                .presentationBackground(.clear) // لمنع التعتيم أو التحجيم الخلفي
+        }
     }
 }
-
-// تعديل المعاينة لتعرض الكود الجديد
-struct ContentView_Previewس: PreviewProvider {
+struct MyPlantsExactView_Previews: PreviewProvider {
     static var previews: some View {
         MyPlantsExactView()
     }
