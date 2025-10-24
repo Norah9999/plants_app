@@ -10,7 +10,7 @@ import SwiftUI
 struct MyPlantsExactView: View {
     
     // يحدد حالة الشيت (مخفي افتراضياً)
-    @State private var showingReminderSheet = false
+    @State private var showingReminderSheet = false // هذا موجود بالفعل ومستخدم
     
     // الألوان المحددة عبر Assets
     let backgroundColor = Color("DarkBackground") // الرمادي الداكن
@@ -42,7 +42,7 @@ struct MyPlantsExactView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 1)
                 
-              
+                
                 
                 // العنوان "My Plants 🌱"
                 HStack {
@@ -87,9 +87,9 @@ struct MyPlantsExactView: View {
                     .padding(.horizontal, 40)
                     .padding(.bottom, 200)
                 
-                // الزر "Set Plant Reminder"
+                // الزر "Set Plant Reminder" - تم تعديل الـ action ليجعل الشيت يظهر
                 Button(action: {
-                    self.showingReminderSheet = true
+                    self.showingReminderSheet = true // <--- هذا الإجراء يغير الحالة إلى true
                 }) {
                     Text("Set Plant Reminder")
                         .font(.system(size: 18, weight: .bold))
@@ -110,8 +110,12 @@ struct MyPlantsExactView: View {
                 Spacer()
             }
         }
-        
-
+        // إضافة المعدل .sheet() هنا
+        .sheet(isPresented: $showingReminderSheet) {
+            SetReminderView(onSave: { plant in
+                // لا حاجة لعمل شيء هنا الآن
+            })
+        }
     }
 }
 struct MyPlantsExactView_Previews: PreviewProvider {
