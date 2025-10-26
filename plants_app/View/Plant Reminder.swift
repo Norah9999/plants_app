@@ -146,6 +146,7 @@ struct ContentView: View {
     }
 
     func deletePlant(plantToDelete: Plant) {
+        // حذف من المصفوفة المحلية بدلاً من viewModel
         plants.removeAll { $0.id == plantToDelete.id }
     }
     
@@ -160,16 +161,8 @@ struct ContentView: View {
                 darkBackground.edgesIgnoringSafeArea(.all)
 
                 VStack(spacing: 0) {
-                    // Header
-                    HStack {
-                        Text("9:41").font(.system(size: 17, weight: .semibold)).foregroundColor(.white)
-                        Spacer()
-                        Image(systemName: "wifi").font(.system(size: 12)).foregroundColor(.white)
-                        Image(systemName: "battery.100").font(.system(size: 12)).foregroundColor(.white)
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 1)
-
+            
+                   
                     HStack {
                         Text("My Plants").font(.largeTitle).fontWeight(.bold).foregroundColor(.white)
                         Text("🌱").font(.largeTitle)

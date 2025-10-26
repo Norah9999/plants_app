@@ -9,10 +9,15 @@ import SwiftUI
 
 @main
 struct plants_appApp: App {
+    @StateObject private var viewModel = PlantViewModel()
+
     var body: some Scene {
         WindowGroup {
-            // يبدأ التطبيق بشاشة MyPlantsExactView
-            MyPlantsExactView()
+            NavigationStack {
+                MyPlantsExactView()
+            }
+            .environmentObject(viewModel) // مهم جداً لتمرير viewModel لكل الشاشات
+            .preferredColorScheme(.dark)
         }
     }
 }

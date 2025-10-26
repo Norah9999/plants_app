@@ -10,7 +10,12 @@ import SwiftUI
 struct MyPlantsExactView: View {
     
     // يحدد حالة الشيت (مخفي افتراضياً)
-    @State private var showingReminderSheet = false // هذا موجود بالفعل ومستخدم
+    @State private var showingReminderSheet = false
+    // عرض الشاشة التالية كشيت كامل الشاشة
+    @State private var isPresentingContentFullScreen = false
+    
+    // ربط الـ ViewModel المشترك لضمان التمرير داخل fullScreenCover
+    @EnvironmentObject var viewModel: PlantViewModel
     
     // الألوان المحددة عبر Assets
     let backgroundColor = Color("DarkBackground") // الرمادي الداكن
@@ -25,25 +30,6 @@ struct MyPlantsExactView: View {
             backgroundColor.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
-                
-                // شريط الحالة (الوقت وأيقونات الشبكة/البطارية)
-                HStack {
-                    Text("9:41")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(headerTextColor)
-                    Spacer()
-                    Image(systemName: "wifi")
-                        .foregroundColor(headerTextColor)
-                        .font(.system(size: 12))
-                    Image(systemName: "battery.100")
-                        .foregroundColor(headerTextColor)
-                        .font(.system(size: 12))
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 1)
-                
-                
-                
                 // العنوان "My Plants 🌱"
                 HStack {
                     Text("My Plants ")
@@ -62,7 +48,6 @@ struct MyPlantsExactView: View {
                     .frame(height: 1)
                     .padding(.vertical, 8)
 
-                
                 Spacer()
                 
                 // صورة النبتة
@@ -87,9 +72,9 @@ struct MyPlantsExactView: View {
                     .padding(.horizontal, 40)
                     .padding(.bottom, 200)
                 
-                // الزر "Set Plant Reminder" - تم تعديل الـ action ليجعل الشيت يظهر
+                // الزر "Set Plant Reminder" - يفتح الشيت لإضافة تذكير
                 Button(action: {
-                    self.showingReminderSheet = true // <--- هذا الإجراء يغير الحالة إلى true
+                    self.showingReminderSheet = true
                 }) {
                     Text("Set Plant Reminder")
                         .font(.system(size: 18, weight: .bold))
@@ -110,16 +95,34 @@ struct MyPlantsExactView: View {
                 Spacer()
             }
         }
-        // إضافة المعدل .sheet() هنا
+        // الشيت: عند الحفظ، يقفل الشيت ثم نعرض ContentView كشيت كامل الشاشة
         .sheet(isPresented: $showingReminderSheet) {
-            SetReminderView(onSave: { plant in
-                // لا حاجة لعمل شيء هنا الآن
+            SetReminderView(onSave: { _ in
+                // SetReminderView يستدعي dismiss() بنفسه
+                // ننتظر لحظة قصيرة حتى ينتهي إغلاق الشيت ثم نعرض التالي
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    withAnimation {
+                        isPresentingContentFullScreen = true
+                    }
+                }
             })
+            .environmentObject(viewModel) // تمرير الـ viewModel للشيت أيضاً
+        }
+        // عرض ContentView كشيت كامل الشاشة ليظهر وكأنه استمرار طبيعي
+        .fullScreenCover(isPresented: $isPresentingContentFullScreen) {
+            ContentView()
+                .environmentObject(viewModel) // تمرير الـ viewModel لضمان الربط
+                .preferredColorScheme(.dark)
         }
     }
 }
+
 struct MyPlantsExactView_Previews: PreviewProvider {
     static var previews: some View {
-        MyPlantsExactView()
+        NavigationStack {
+            MyPlantsExactView()
+                .environmentObject(PlantViewModel()) // للمعاينة فقط
+        }
+        .preferredColorScheme(.dark)
     }
 }

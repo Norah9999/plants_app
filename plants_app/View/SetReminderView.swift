@@ -10,6 +10,7 @@ import SwiftUI
 struct SetReminderView: View {
     
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var viewModel: PlantViewModel
 
     // Closure لإرسال النبتة الجديدة أو المعدلة
     var onSave: (Plant) -> Void
@@ -79,7 +80,11 @@ struct SetReminderView: View {
                             waterAmount: waterAmount,
                             isWatered: false
                         )
+                        // أضف إلى المصدر المشترك
+                        viewModel.addPlant(newPlant)
+                        // استدعاء onSave (لتفعيل الانتقال في MyPlantsExactView)
                         onSave(newPlant)
+                        // إغلاق الشيت
                         dismiss()
                     }) {
                         Image(systemName: "checkmark.circle.fill")
@@ -226,5 +231,6 @@ struct ReminderRow: View {
 struct SetReminderView_Previews: PreviewProvider {
     static var previews: some View {
         SetReminderView { _ in }
+            .environmentObject(PlantViewModel())
     }
 }
