@@ -17,6 +17,46 @@ struct Plant: Identifiable, Equatable {
     var isWatered: Bool
 }
 
+import SwiftUI
+
+struct PlantReminderView: View {
+    @State private var reminderTime = Date()
+    
+    var body: some View {
+        ZStack {
+            Color(.systemBackground).ignoresSafeArea()
+            
+            VStack(spacing: 30) {
+                Text("Set your plant watering reminder 🌿")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding(.top, 40)
+                
+                DatePicker("Select time", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                    .labelsHidden()
+                    .datePickerStyle(.wheel)
+                
+                Button(action: {
+                    NotificationManager.instance.requestAuthorization()
+                    NotificationManager.instance.scheduleWaterReminder(for: reminderTime)
+                }) {
+                    Text("Schedule Reminder")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                }
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .padding()
+        }
+    }
+}
+
+
 // MARK: - Plant Row View (PlantRow)
 struct PlantRow: View {
     let customGreen = Color("PrimaryGreen")
@@ -115,116 +155,84 @@ struct myPlants2: View {
                 .foregroundColor(Color("DescriptiveText"))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color("DarkBackground").edgesIgnoringSafeArea(.all))
+        .background(Color(.systemBackground).ignoresSafeArea())
     }
 }
 
 // MARK: - Main Content View (ContentView)
 struct ContentView: View {
-    let darkBackground = Color("DarkBackground")
     let customGreen = Color("PrimaryGreen")
     let dividerColor = Color("SeparatorColor")
 
-    @State private var plants: [Plant] = [
-        Plant(name: "Monstera", location: "Kitchen", sunExposure: "Full sun", waterAmount: "20–50 ml", isWatered: false),
-        Plant(name: "Pothos", location: "Bedroom", sunExposure: "Full sun", waterAmount: "20–50 ml", isWatered: false),
-        Plant(name: "Orchid", location: "Living Room", sunExposure: "Full sun", waterAmount: "250–50 ml", isWatered: false),
-        Plant(name: "Spider", location: "Kitchen", sunExposure: "Full sun", waterAmount: "20–50 ml", isWatered: false)
-    ]
-
+    @EnvironmentObject var viewModel: PlantViewModel
     @State private var selectedPlant: Plant? = nil
     @State private var isAddingNewPlant: Bool = false
 
-    var wateredPlantsCount: Int { plants.filter { $0.isWatered }.count }
-    var totalPlantsCount: Int { plants.count }
+    var wateredPlantsCount: Int { viewModel.plants.filter { $0.isWatered }.count }
+    var totalPlantsCount: Int { viewModel.plants.count }
     var wateringProgress: Double { totalPlantsCount > 0 ? Double(wateredPlantsCount) / Double(totalPlantsCount) : 0 }
 
     // ✅ الخاصية المحسوبة للتحقق من اكتمال جميع المهام
     var allPlantsWatered: Bool {
-        guard !plants.isEmpty else { return false }
-        return plants.allSatisfy { $0.isWatered }
+        guard !viewModel.plants.isEmpty else { return false }
+        return viewModel.plants.allSatisfy { $0.isWatered }
     }
 
     func deletePlant(plantToDelete: Plant) {
-        // حذف من المصفوفة المحلية بدلاً من viewModel
-        plants.removeAll { $0.id == plantToDelete.id }
+        viewModel.plants.removeAll { $0.id == plantToDelete.id }
     }
     
     var body: some View {
         // ✅ منطق التبديل الشرطي (إذا كان كل شيء مروي، اذهب لـ MyPlants2)
         if allPlantsWatered {
             MyPlants2()
-                .preferredColorScheme(.dark)
+                .environmentObject(viewModel)
         } else {
             // المحتوى الأصلي (قائمة النباتات)
             ZStack {
-                darkBackground.edgesIgnoringSafeArea(.all)
+                Color(.systemBackground).ignoresSafeArea()
 
                 VStack(spacing: 0) {
-            
-                   
-                    HStack {
-                        Text("My Plants").font(.largeTitle).fontWeight(.bold).foregroundColor(.white)
-                        Text("🌱").font(.largeTitle)
-                        Spacer()
+                    // Status Banner - يظهر دائماً مع تغيير النص فقط (بدون Divider تحت الشريط)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(
+                            wateredPlantsCount == 0
+                            ? "Your plants are waiting for a sip 💦"
+                            : "\(wateredPlantsCount) of your plants feel loved today✨"
+                        )
+                        .font(.headline)
+                        .foregroundColor(.white)
+
+                        GeometryReader { geometry in
+                            ZStack(alignment: .leading) {
+                                Capsule()
+                                    .fill(dividerColor.opacity(0.5))
+                                    .frame(height: 6)
+                                Capsule()
+                                    .fill(customGreen)
+                                    .frame(width: geometry.size.width * CGFloat(wateringProgress), height: 6)
+                            }
+                        }
+                        .frame(height: 6)
+                        .padding(.bottom, 10)
                     }
                     .padding(.horizontal)
-                    .padding(.top, 5)
-                    Divider().background(dividerColor)
-                    
-                    // Status Banner
-                    if wateredPlantsCount == 0 {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Your plants are waiting for a sip 💦")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 10)
-                        }
-                        .padding(.horizontal)
-                        .padding(.top, 10)
-                    } else {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("\(wateredPlantsCount) of your plants feel loved today✨")
-                                .font(.headline)
-                                .foregroundColor(.white)
-
-                            GeometryReader { geometry in
-                                ZStack(alignment: .leading) {
-                                    Capsule()
-                                        .fill(dividerColor.opacity(0.5))
-                                        .frame(height: 6)
-                                    Capsule()
-                                        .fill(customGreen)
-                                        .frame(width: geometry.size.width * CGFloat(wateringProgress), height: 6)
-                                }
-                            }
-                            .frame(height: 6)
-                            .padding(.bottom, 10)
-                            Divider().background(dividerColor)
-                        }
-                        .padding(.horizontal)
-                        .padding(.top, 10)
-                    }
+                    .padding(.top, 10)
                     
                     // Plant List
                     List {
-                        ForEach($plants) { $plant in
+                        ForEach($viewModel.plants) { $plant in
                             PlantRow(plant: $plant)
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button {
+                                    // فقط تغيير لون زر الحذف ليكون أحمر
+                                    Button(role: .destructive) {
                                         deletePlant(plantToDelete: $plant.wrappedValue)
                                     } label: {
-                                        ZStack {
-                                            Circle()
-                                                .fill(Color.red)
-                                                .frame(width: 40, height: 40)
-                                            Image(systemName: "trash.fill")
-                                                .foregroundColor(.white)
-                                                .font(.system(size: 18, weight: .semibold))
-                                        }
+                                        Label("", systemImage: "trash.fill")
                                     }
+                                    .tint(.red)
                                 }
-                                .listRowBackground(darkBackground)
+                                .listRowBackground(Color(.systemBackground))
                                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                 .listRowSeparator(.hidden)
                                 .onTapGesture {
@@ -233,17 +241,17 @@ struct ContentView: View {
                         }
                     }
                     .scrollContentBackground(.hidden)
-                    .background(darkBackground)
+                    .background(Color(.systemBackground))
                     .listStyle(PlainListStyle())
                     
                     // Edit Sheet (يفترض وجود EditPlantView)
                     .sheet(item: $selectedPlant) { selectedPlant in
-                        // تأكد من أن EditPlantView موجود في ملفه الخاص
-                        // أو أضف تعريفه هنا إذا كان مفقودًا.
-                        EditPlantView(
-                            plant: $plants[plants.firstIndex(of: selectedPlant)!],
-                            deleteAction: deletePlant
-                        )
+                        if let index = viewModel.plants.firstIndex(of: selectedPlant) {
+                            EditPlantView(
+                                plant: $viewModel.plants[index],
+                                deleteAction: deletePlant
+                            )
+                        }
                     }
 
                     // Add Button
@@ -262,16 +270,15 @@ struct ContentView: View {
                         .padding(.trailing, 20)
                         .padding(.bottom, 20)
                     }
-                    // ✅ SetReminderView Sheet (لقد تم إصلاح مكانها)
                     .sheet(isPresented: $isAddingNewPlant) {
-                        // تأكد من أن SetReminderView موجود في ملفه الخاص
-                        SetReminderView { newPlant in
-                            plants.append(newPlant)
+                        SetReminderView { _ in
+                            // SetReminderView يضيف للـ viewModel بنفسه
+                            // لا حاجة لإضافة هنا
                         }
+                        .environmentObject(viewModel)
                     }
                 }
             }
-            .preferredColorScheme(.dark)
         }
     }
 }
@@ -280,5 +287,7 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(PlantViewModel())
+            .preferredColorScheme(.dark)
     }
 }

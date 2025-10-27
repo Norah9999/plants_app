@@ -12,10 +12,8 @@ struct SetReminderView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: PlantViewModel
 
-    // Closure لإرسال النبتة الجديدة أو المعدلة
     var onSave: (Plant) -> Void
 
-    // متغيرات الإدخال
     @State private var plantName: String
     @State private var room: String
     @State private var light: String
@@ -24,13 +22,10 @@ struct SetReminderView: View {
 
     let defaultPlantName = "Pothos"
 
-    // الألوان
-    let darkBackground = Color("DarkBackground")
     let itemColor = Color("ItemRowColor")
     let separatorColor = Color("SeparatorColor")
     let primaryGreen = Color("PrimaryGreen")
 
-    // ✅ init لقبول القيم المسبقة
     init(
         plantName: String = "",
         room: String = "Bedroom",
@@ -49,10 +44,9 @@ struct SetReminderView: View {
 
     var body: some View {
         ZStack {
-            darkBackground.edgesIgnoringSafeArea(.all)
+            Color(.systemBackground).ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // شريط العنوان
                 HStack {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark")
@@ -71,7 +65,6 @@ struct SetReminderView: View {
 
                     Spacer()
 
-                    // زر الحفظ
                     Button(action: {
                         let newPlant = Plant(
                             name: plantName.isEmpty ? defaultPlantName : plantName,
@@ -80,11 +73,8 @@ struct SetReminderView: View {
                             waterAmount: waterAmount,
                             isWatered: false
                         )
-                        // أضف إلى المصدر المشترك
                         viewModel.addPlant(newPlant)
-                        // استدعاء onSave (لتفعيل الانتقال في MyPlantsExactView)
                         onSave(newPlant)
-                        // إغلاق الشيت
                         dismiss()
                     }) {
                         Image(systemName: "checkmark.circle.fill")
@@ -97,7 +87,6 @@ struct SetReminderView: View {
                 .padding(.horizontal, 20)
                 .padding(.vertical, 30)
 
-                // حقل اسم النبتة
                 HStack {
                     Text("Plant Name")
                         .foregroundColor(.white)
@@ -123,10 +112,8 @@ struct SetReminderView: View {
                 .padding(.horizontal, 15)
                 .padding(.bottom, 40)
 
-                // باقي الخيارات مثل الغرفة، الضوء، الري، الماء
                 ScrollView {
                     VStack(spacing: 20) {
-                        // الغرفة والضوء
                         VStack(spacing: 0) {
                             Menu {
                                 ForEach(["Bedroom", "Living Room", "Kitchen", "Balcony", "Bathroom"], id: \.self) { roomOption in
@@ -158,7 +145,6 @@ struct SetReminderView: View {
                         .padding(.horizontal, 15)
                         .padding(.bottom, 20)
 
-                        // الري وكمية الماء
                         VStack(spacing: 0) {
                             Menu {
                                 ForEach(["Every day", "Every 2 days", "Every 3 days", "Once a week", "Every 10 days", "Every 2 weeks"], id: \.self) { dayOption in
@@ -196,11 +182,10 @@ struct SetReminderView: View {
         .clipShape(
             .rect(topLeadingRadius: 30, topTrailingRadius: 30)
         )
-        .background(darkBackground)
+        .background(Color(.systemBackground))
     }
 }
 
-// Reminder Row
 struct ReminderRow: View {
     var icon: String
     var title: String
@@ -227,10 +212,10 @@ struct ReminderRow: View {
     }
 }
 
-// Preview
 struct SetReminderView_Previews: PreviewProvider {
     static var previews: some View {
         SetReminderView { _ in }
             .environmentObject(PlantViewModel())
+            .preferredColorScheme(.dark)
     }
 }
