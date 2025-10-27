@@ -105,14 +105,8 @@ struct MyPlantsExactView: View {
         // الشيت: عند الحفظ، يقفل الشيت ثم نعرض ContentView كشيت كامل الشاشة
         .sheet(isPresented: $showingReminderSheet) {
             SetReminderView(onSave: { _ in
-                // SetReminderView يستدعي dismiss() بنفسه
-                // بعد الإغلاق، نعرض ContentView
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                    withAnimation {
-                        isPresentingContentFullScreen = true
-                    }
-                }
             })
+            
             .environmentObject(viewModel) // تمرير الـ viewModel للشيت أيضاً
         }
         // عرض ContentView كشاشة كاملة بعد أول إضافة

@@ -17,7 +17,7 @@ struct Plant: Identifiable, Equatable {
     var isWatered: Bool
 }
 
-import SwiftUI
+
 
 struct PlantReminderView: View {
     @State private var reminderTime = Date()
