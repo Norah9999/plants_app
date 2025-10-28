@@ -11,9 +11,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		00C9D2792EA66ED200521E87 /* plants_app */ = {
+		00C9D2792EA66ED200521E87 /* Planto */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = plants_app;
+			path = Planto;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		00C9D26E2EA66ED200521E87 = {
 			isa = PBXGroup;
 			children = (
-				00C9D2792EA66ED200521E87 /* plants_app */,
+				00C9D2792EA66ED200521E87 /* Planto */,
 				00C9D2782EA66ED200521E87 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				00C9D2792EA66ED200521E87 /* plants_app */,
+				00C9D2792EA66ED200521E87 /* Planto */,
 			);
 			name = plants_app;
 			packageProductDependencies = (
