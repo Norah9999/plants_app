@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00C9D2762EA66ED200521E87"
-               BuildableName = "plants_app.app"
-               BlueprintName = "plants_app"
-               ReferencedContainer = "container:plants_app.xcodeproj">
+               BuildableName = "Planto.app"
+               BlueprintName = "Planto"
+               ReferencedContainer = "container:Planto.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "00C9D2762EA66ED200521E87"
-            BuildableName = "plants_app.app"
-            BlueprintName = "plants_app"
-            ReferencedContainer = "container:plants_app.xcodeproj">
+            BuildableName = "Planto.app"
+            BlueprintName = "Planto"
+            ReferencedContainer = "container:Planto.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "00C9D2762EA66ED200521E87"
-            BuildableName = "plants_app.app"
-            BlueprintName = "plants_app"
-            ReferencedContainer = "container:plants_app.xcodeproj">
+            BuildableName = "Planto.app"
+            BlueprintName = "Planto"
+            ReferencedContainer = "container:Planto.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

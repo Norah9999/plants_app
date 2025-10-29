@@ -17,7 +17,6 @@ struct MyPlantsExactView: View {
     // ربط الـ ViewModel المشترك لضمان التمرير داخل fullScreenCover
     @EnvironmentObject var viewModel: PlantViewModel
     
-    // الألوان المحددة عبر Assets
     // ملاحظة: الخلفية الآن من النظام لتتوافق مع الدارك مود
     let headerTextColor = Color.white
     let buttonBackgroundColor = Color("PrimaryGreen")
@@ -26,12 +25,9 @@ struct MyPlantsExactView: View {
 
     var body: some View {
         ZStack {
-            // خلفية نظامية متكيفة
             
         
-                // شاشة البداية
                 VStack(spacing: 0) {
-                    // العنوان "My Plants 🌱"
                     HStack {
                         Text("My Plants ")
                             .font(.system(size: 35, weight: .bold))
@@ -68,7 +64,7 @@ struct MyPlantsExactView: View {
                         .padding(.bottom, 10)
                     
                     // الوصف
-                    Text("Now all your plants will be in one place and we will help you take care of them :) 🪴")
+                    Text("Now all your plants will be in one place and we will help you take care of them :)🪴")
                         .font(.system(size: 16))
                         .foregroundColor(descriptiveTextColor)
                         .multilineTextAlignment(.center)
@@ -99,7 +95,7 @@ struct MyPlantsExactView: View {
                 } else {
                     ContentView()
                         .environmentObject(viewModel)
-                } 
+                }
             }
         }
         // الشيت: عند الحفظ، يقفل الشيت ثم نعرض ContentView كشيت كامل الشاشة

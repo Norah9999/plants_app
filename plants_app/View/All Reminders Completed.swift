@@ -35,7 +35,7 @@ struct MyPlants2: View {
 //                }
 //                .padding(.leading, 20)
 //                .padding(.top, 30)
-//                
+//
 //                Divider()
 //                    .background(headerTextColor.opacity(0.5))
 //                    .frame(height: 1)
